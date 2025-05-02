@@ -33,6 +33,33 @@ async function queryRoutes(app: FastifyInstance) {
       }
     }
   })
+
+  app.patch<{
+    Params: { id: string }
+  }>('/queries/:id', {
+    schema: {
+      params: {
+        type: 'object',
+        required: ['id'],
+        properties: {
+          id: { type: 'string', format: 'uuid' }
+        }
+      }
+    },
+    async handler(request, reply) {
+      const { id } = request.params
+      try {
+        const updated = await prisma.query.update({
+          where: { id },
+          data: { status: 'RESOLVED' }
+        })
+        reply.send(updated)
+      } catch (err: any) {
+        throw new ApiError('failed to resolve query', 400)
+      }
+    }
+  })
+
 }
 
 export default queryRoutes
