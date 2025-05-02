@@ -11,9 +11,30 @@ datasource db {
 }
 
 model FormData {
-  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  question  String
-  answer    String
+  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  question String
+  answer   String
+
+  queries Query[]
 
   @@map("form_data")
+}
+
+/// Possible states for a query
+enum QueryStatus {
+  OPEN
+  RESOLVED
+}
+
+model Query {
+  id          String      @id @default(uuid()) @db.Uuid
+  title       String
+  description String?
+  status      QueryStatus @default(OPEN)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  formData    FormData    @relation(fields: [formDataId], references: [id])
+  formDataId  String      @db.Uuid
+
+  @@map("query")
 }
