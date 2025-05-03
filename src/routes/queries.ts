@@ -60,6 +60,30 @@ async function queryRoutes(app: FastifyInstance) {
     }
   })
 
+  app.delete<{
+    Params: { id: string }
+  }>('/queries/:id', {
+    schema: {
+      params: {
+        type: 'object',
+        required: ['id'],
+        properties: {
+          id: { type: 'string', format: 'uuid' }
+        }
+      }
+    },
+    async handler(request, reply) {
+      const { id } = request.params
+      try {
+        await prisma.query.delete({ where: { id } })
+        reply.code(204).send()  
+      } catch (err: any) {
+        throw new ApiError('failed to delete query', 400)
+      }
+    }
+  })
+  
+
 }
 
 export default queryRoutes
