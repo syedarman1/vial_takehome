@@ -1,0 +1,57 @@
+
+@import 'tailwindcss/preflight';
+@import 'tailwindcss/utilities';
+
+:root {
+  
+  --background: #000000;
+  --foreground: #e5e5e5;
+  --primary: #4b8aff;
+  --secondary: #999999;
+  --success: #4ade80;
+  --danger: #ff4d4d;
+  --muted: #666666;
+  --card-bg: #111111;
+  --sidebar-bg: #1a1a1a;
+  --muted-border: #333333;
+  --hover-bg: #222222;
+}
+
+body {
+  background: var(--background);
+  color: var(--foreground);
+  line-height: 1.5;
+  margin: 0;
+  font-family: var(--font-geist-sans), sans-serif;
+}
+
+
+@keyframes slideUp {
+  from {
+    transform: translateY(100%) scale(0.9);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0) scale(1);
+    opacity: 1;
+  }
+}
+
+.animate-slideUp {
+  animation: slideUp 0.3s ease-out forwards;
+}
+
+
+.card-shadow {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+}
+
+
+.hover-lift {
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.hover-lift:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7);
+}
