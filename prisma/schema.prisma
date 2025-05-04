@@ -1,38 +1,41 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
 
+// Generate the Prisma client so we can talk to the database
 generator client {
   provider = "prisma-client-js"
 }
 
+// Configure our Postgres database connection
 datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
-model FormData {
-  id       String @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
-  question String
-  answer   String
-
-  queries Query[]
-
-  @@map("form_data")
-}
-
-/// Possible states for a query
+// Keep track of whether a query is still open or has been resolved
 enum QueryStatus {
   OPEN
   RESOLVED
 }
 
+// Represents a single form entry with a question and answer
+model FormData {
+  id        String    @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  question  String
+  answer    String
+  queries   Query[]   // all the queries raised on this form entry
+
+  @@map("form_data")
+}
+
+// Each Query ties back to one form entry and has its own status, timestamps, etc.
 model Query {
   id          String      @id @default(uuid()) @db.Uuid
-  title       String
-  description String?
-  status      QueryStatus @default(OPEN)
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
+  title       String      // short descriptor of the query
+  description String?     // optional extra details
+  status      QueryStatus @default(OPEN)  // open by default, flip to RESOLVED when done
+  createdAt   DateTime    @default(now())  // when it was created
+  updatedAt   DateTime    @updatedAt       // auto-updates on every change
+
+  // link back to the FormData record
   formData    FormData    @relation(fields: [formDataId], references: [id])
   formDataId  String      @db.Uuid
 
