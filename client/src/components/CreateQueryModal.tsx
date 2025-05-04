@@ -48,7 +48,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
     try {
       if (isEdit) {
         const url = `http://127.0.0.1:8080/queries/${query!.id}`;
-        // only update description
+        
         const payload = { description };
         console.log('PATCH request URL:', url, 'Payload:', payload);
         const response = await fetch(url, {
@@ -88,7 +88,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
         autoClose: 3000,
       });
 
-      // only close the modal when creating a new query
+      
       if (!isEdit) {
         onClose();
       }

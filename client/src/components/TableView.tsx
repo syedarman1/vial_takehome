@@ -19,9 +19,16 @@ import {
   Alert,
 } from '@mantine/core';
 import { notifications } from '@mantine/notifications';
-import { IconPlus, IconQuestionMark, IconCheck, IconAlertTriangle, IconRefresh } from '@tabler/icons-react';
+import { IconPlus, IconQuestionMark, IconCheck, IconAlertTriangle } from '@tabler/icons-react';
 import CreateQueryModal from './CreateQueryModal';
-import { FormData, Query, FormDataResponse } from '../types';
+import { FormData, Query } from '../types';
+
+
+interface FormDataResponse {
+  data: {
+    formData: FormData[];
+  };
+}
 
 const fetcher = (url: string) => fetch(url).then(r => r.json());
 
@@ -60,13 +67,6 @@ export default function TableView() {
   const handleSubmit = async () => {
     try {
       await mutate(fetcher('http://127.0.0.1:8080/form-data'), { revalidate: true });
-      notifications.show({
-        title: 'Table Updated',
-        message: 'The table has been refreshed with the latest data.',
-        color: 'blue',
-        icon: <IconRefresh size={16} />,
-        autoClose: 3000,
-      });
     } catch (err) {
       console.error('Error refreshing table:', err);
       notifications.show({
