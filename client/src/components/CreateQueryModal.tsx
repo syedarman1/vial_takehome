@@ -1,4 +1,3 @@
-// components/CreateQueryModal.tsx
 'use client';
 
 import { useState, useEffect } from 'react';
@@ -188,7 +187,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
       onClose={onClose}
       title={isEdit ? `Query Details` : `Create New Query`}
       centered
-      size="lg"
+      size="xl" // Increased from "lg" to "xl" to provide more space
       radius="md"
       transitionProps={{ transition: 'slide-up', duration: 300, timingFunction: 'ease-out' }}
       overlayProps={{ backgroundOpacity: 0.7, blur: 5, color: 'var(--background)' }}
@@ -291,7 +290,8 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
             <Text c="var(--muted)" fz="sm" style={{ lineHeight: 1.6 }}>
               Relates to: "{query?.title}" <br />
               Created by {query?.createdBy || 'Unknown'} on{' '}
-              {new Date(query?.createdAt || '').toLocaleDateString()}
+              {new Date(query?.createdAt || '').toLocaleDateString()} <br />
+              Updated on {new Date(query?.updatedAt || '').toLocaleDateString()}
             </Text>
           </Flex>
         )}
@@ -337,7 +337,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
           }}
         />
 
-        <Group justify="flex-end" gap={rem(12)} mt="sm">
+        <Group justify="flex-end" gap={rem(12)} mt="sm" wrap="nowrap" style={{ width: '100%' }}>
           {isEdit && (
             <Button
               onClick={handleDelete}
@@ -348,9 +348,10 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
               variant="outline"
               radius="md"
               style={{
-                padding: `${rem(8)} ${rem(16)}`,
+                padding: `${rem(8)} ${rem(38)}`,
                 fontSize: theme.fontSizes.md,
                 transition: 'all 0.2s ease',
+                minWidth: rem(100), 
               }}
               aria-label="Delete query"
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = `rgba(248, 113, 113, 0.2)`)}
@@ -368,6 +369,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
               padding: `${rem(8)} ${rem(16)}`,
               fontSize: theme.fontSizes.md,
               transition: 'all 0.2s ease',
+              minWidth: rem(150), // Increased to accommodate full text
             }}
             aria-label="Cancel"
             onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = `rgba(203, 213, 224, 0.2)`)}
@@ -388,6 +390,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
                 padding: `${rem(8)} ${rem(16)}`,
                 fontSize: theme.fontSizes.md,
                 transition: 'all 0.2s ease',
+                minWidth: rem(150), // Increased to accommodate full text
               }}
               aria-label="Mark query as resolved"
               onMouseEnter={(e) => (e.currentTarget.style.backgroundColor = `rgba(74, 222, 128, 0.2)`)}
@@ -406,10 +409,10 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
               variant="filled"
               radius="md"
               style={{
-                padding: `${rem(10)} ${rem(20)}`,
+                padding: `${rem(8)} ${rem(16)}`,
                 fontSize: theme.fontSizes.md,
-                fontWeight: 600,
                 transition: 'all 0.2s ease',
+                minWidth: rem(150), // Increased to accommodate full text
               }}
               aria-label="Save changes"
               onMouseEnter={(e) => (e.currentTarget.style.transform = 'scale(1.05)')}
