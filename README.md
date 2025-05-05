@@ -67,12 +67,6 @@ docker-compose exec nodeserver npx prisma db seed
 ```
 
 You should see your form_data table populated.
-
-### Start the Server (Alternative Local)
-If you prefer running the API directly without Docker:
-```bash
-npm install
-npm run dev      # launches Fastify on http://localhost:8080
 ```
 
 ## Frontend Setup
