@@ -1,4 +1,255 @@
-# take-home-assignment-A
+# Query Management App
+
+A simple full-stack application to track and resolve data queries on patient form entries. Built with:
+- **Backend**: Node.js, TypeScript, Fastify, Prisma, PostgreSQL, Docker
+- **Frontend**: Next.js, TypeScript, React, Mantine
+
+---
+
+## Table of Contents
+1. [Getting Started](#getting-started)  
+   1.1 [Prerequisites](#prerequisites)  
+   1.2 [Clone the Repo](#clone-the-repo)  
+   1.3 [Environment Variables](#environment-variables)  
+2. [Backend Setup](#backend-setup)  
+   2.1 [Start with Docker](#start-with-docker)  
+   2.2 [Run Migrations & Seed](#run-migrations--seed)  
+   2.3 [Start the Server](#start-the-server)  
+3. [Frontend Setup](#frontend-setup)  
+   3.1 [Install & Run](#install--run)  
+4. [API Documentation](#api-documentation)  
+5. [Development Tips](#development-tips)  
+6. [Optional Deployment](#optional-deployment)  
+
+---
+
+#### Getting Started
+
+### Prerequisites
+- [Git](https://git-scm.com/)  
+- [Docker & Docker Compose](https://www.docker.com/)  
+- [Node.js v18+ & npm](https://nodejs.org/)  
+
+### Clone the Repo
+```bash
+git clone https://github.com/syedarman1/vial_takehome.git
+cd vial_takehome
+```
+
+### Environment Variables
+Copy the example and update your DB connection string:
+```bash
+cp .env.example .env
+```
+
+Edit .env so that:
+```ini
+DATABASE_URL="postgres://vial:vial@vial-backend:5432/vial?schema=public"
+
+```
+## Backend Setup
+
+### Start with Docker
+Build and spin up the containers:
+```bash
+docker-compose build
+docker-compose up -d
+```
+
+This will launch:
+- Postgres at localhost:5432
+- API at localhost:8080
+
+### Run Migrations & Seed
+```bash
+docker-compose exec nodeserver npx prisma migrate deploy
+docker-compose exec nodeserver npx prisma db seed
+```
+
+You should see your form_data table populated.
+
+### Start the Server (Alternative Local)
+If you prefer running the API directly without Docker:
+```bash
+npm install
+npm run dev      # launches Fastify on http://localhost:8080
+```
+
+## Frontend Setup
+
+```bash
+cd client
+npm install
+npm run dev      # launches Next.js on http://localhost:3000
+```
+### API Documentation
+This API supports the Query Management Application. It enables creating, updating, resolving, and deleting queries related to patient form entries.
+
+All endpoints are served from:
+```
+http://localhost:8080
+```
+
+## Endpoints
+
+### GET /form-data
+Retrieves all patient form entries along with their associated queries.
+
+#### Request
+```
+GET /form-data
+```
+
+#### Response
+**Status:** 200 OK  
+**Body:**
+```json
+{
+  "statusCode": 200,
+  "data": {
+    "total": 10,
+    "formData": [
+      {
+        "id": "f16f3d32-4e29-4978-9fc6-5f4fcbd7bff9",
+        "question": "Do you have any history of chronic diseases, such as diabetes, hypertension, or cardiovascular diseases?",
+        "answer": "No",
+        "queries": [
+          {
+            "id": "dfc9ceb0-b373-40ff-b674-7f98c2d76470",
+            "title": "Do you smoke tobacco or use nicotine?",
+            "description": "User said No, but please confirm if that's up to date.",
+            "status": "OPEN",
+            "createdAt": "2025-05-03T00:24:31.795Z",
+            "updatedAt": "2025-05-03T00:24:31.795Z",
+            "formDataId": "f16f3d32-4e29-4978-9fc6-5f4fcbd7bff9"
+          }
+        ]
+      },
+      
+    ]
+  },
+  "message": "success"
+}
+
+```
+### POST /queries
+Creates a new query linked to a specific form data entry.
+
+#### Request
+```
+POST /queries
+Content-Type: application/json
+```
+
+**Body:**
+```json
+{
+  "title": "What was the individual dose of the Medication?",
+  "description": "Dose seems too high",
+  "formDataId": "f16f3d32-4e29-4978-9fc6-5f4fcbd7bff9"
+}
+```
+
+#### Response
+**Status:** 201 Created  
+**Body:**
+```json
+{
+  "id": "0f09cedf-2ed0-4fd2-aa2b-8e6092de2f7c",
+  "title": "What was the individual dose of the Medication?",
+  "description": "Dose seems too high",
+  "status": "OPEN",
+  "createdAt": "2025-05-02T22:37:28.978Z",
+  "updatedAt": "2025-05-02T22:37:28.978Z",
+  "formDataId": "f16f3d32-4e29-4978-9fc6-5f4fcbd7bff9"
+}
+```
+
+### PATCH /queries/:id
+Updates an existing query's status or description. Primarily used to change a query from OPEN to RESOLVED.
+
+#### Request
+```
+PATCH /queries/:id
+Content-Type: application/json
+```
+
+**Body:**
+```json
+{
+  "status": "RESOLVED",
+  "description": "Updated description (optional)"
+}
+
+```
+
+#### Response
+**Status:** 200 OK  
+**Body:**
+```json
+{
+  "id": "0f09cedf-2ed0-4fd2-aa2b-8e6092de2f7c",
+  "title": "What was the individual dose of the Medication?",
+  "description": "Dose seems too high",
+  "status": "RESOLVED",
+  "createdAt": "2025-05-02T22:37:28.978Z",
+  "updatedAt": "2025-05-02T23:26:25.976Z",
+  "formDataId": "f16f3d32-4e29-4978-9fc6-5f4fcbd7bff9"
+}
+```
+
+### DELETE /queries/:id
+Deletes a query by its ID.
+
+#### Request
+```
+DELETE /queries/:id
+```
+
+#### Response
+**Status:** 204 No Content  
+**Body:** *empty*
+
+## Error Responses
+
+All error responses follow this standard format:
+
+```json
+{
+  "statusCode": 400,
+  "error": "Bad Request",
+  "message": "Description of what went wrong"
+}
+```
+
+## Status Codes
+
+- `200 OK`: Request succeeded
+- `201 Created`: Resource successfully created
+- `204 No Content`: Request succeeded with no content returned
+- `400 Bad Request`: Invalid request parameters
+- `404 Not Found`: Resource not found
+- `500 Internal Server Error`: Server error occurred
+
+## Data Models
+
+### Form Data
+- `id`: UUID - Unique identifier
+- `question`: String - The form question
+- `answer`: String - Patient's response
+- `queries`: Array - Associated queries about this form entry
+
+### Query
+- `id`: UUID - Unique identifier
+- `title`: String - Title of the query
+- `description`: String - Detailed description
+- `status`: String - Either "OPEN" or "RESOLVED"
+- `createdAt`: DateTime - Creation timestamp
+- `updatedAt`: DateTime - Last update timestamp
+- `formDataId`: UUID - Reference to associated form data
+
+---
+## Original Assignment Requirements
 
 ## Getting Started
 - copy the .env.example file into a .env file
@@ -131,169 +382,3 @@ Some helpful links:
 We hope you have fun with the assignment and we look forward to hearing from you!
 
 ---
-
-### API Documentation
-This API supports the Query Management Application. It enables creating, updating, resolving, and deleting queries related to patient form entries.
-
-All endpoints are served from:
-```
-http://localhost:8080
-```
-
-## Endpoints
-
-### GET /form-data
-Retrieves all patient form entries along with their associated queries.
-
-#### Request
-```
-GET /form-data
-```
-
-#### Response
-**Status:** 200 OK  
-**Body:**
-```json
-{
-  "statusCode": 200,
-  "data": {
-    "total": 10,
-    "formData": [
-      {
-        "id": "f16f3d32-4e29-4978-9fc6-5f4fcbd7bff9",
-        "question": "Do you have any history of chronic diseases, such as diabetes, hypertension, or cardiovascular diseases?",
-        "answer": "No",
-        "queries": [
-          {
-            "id": "dfc9ceb0-b373-40ff-b674-7f98c2d76470",
-            "title": "Do you smoke tobacco or use nicotine?",
-            "description": "User said No, but please confirm if that's up to date.",
-            "status": "OPEN",
-            "createdAt": "2025-05-03T00:24:31.795Z",
-            "updatedAt": "2025-05-03T00:24:31.795Z",
-            "formDataId": "f16f3d32-4e29-4978-9fc6-5f4fcbd7bff9"
-          }
-        ]
-      },
-      
-    ]
-  },
-  "message": "success"
-}
-```
-
-### POST /queries
-Creates a new query linked to a specific form data entry.
-
-#### Request
-```
-POST /queries
-Content-Type: application/json
-```
-
-**Body:**
-```json
-{
-  "title": "What was the individual dose of the Medication?",
-  "description": "Dose seems too high",
-  "formDataId": "f16f3d32-4e29-4978-9fc6-5f4fcbd7bff9"
-}
-```
-
-#### Response
-**Status:** 201 Created  
-**Body:**
-```json
-{
-  "id": "0f09cedf-2ed0-4fd2-aa2b-8e6092de2f7c",
-  "title": "What was the individual dose of the Medication?",
-  "description": "Dose seems too high",
-  "status": "OPEN",
-  "createdAt": "2025-05-02T22:37:28.978Z",
-  "updatedAt": "2025-05-02T22:37:28.978Z",
-  "formDataId": "f16f3d32-4e29-4978-9fc6-5f4fcbd7bff9"
-}
-```
-
-### PATCH /queries/:id
-Updates an existing query's status or description. Primarily used to change a query from OPEN to RESOLVED.
-
-#### Request
-```
-PATCH /queries/:id
-Content-Type: application/json
-```
-
-**Body:**
-```json
-{
-  "status": "RESOLVED",
-  "description": "Updated description (optional)"
-}
-
-```
-
-#### Response
-**Status:** 200 OK  
-**Body:**
-```json
-{
-  "id": "0f09cedf-2ed0-4fd2-aa2b-8e6092de2f7c",
-  "title": "What was the individual dose of the Medication?",
-  "description": "Dose seems too high",
-  "status": "RESOLVED",
-  "createdAt": "2025-05-02T22:37:28.978Z",
-  "updatedAt": "2025-05-02T23:26:25.976Z",
-  "formDataId": "f16f3d32-4e29-4978-9fc6-5f4fcbd7bff9"
-}
-```
-
-### DELETE /queries/:id
-Deletes a query by its ID.
-
-#### Request
-```
-DELETE /queries/:id
-```
-
-#### Response
-**Status:** 204 No Content  
-**Body:** *empty*
-
-## Error Responses
-
-All error responses follow this standard format:
-
-```json
-{
-  "statusCode": 400,
-  "error": "Bad Request",
-  "message": "Description of what went wrong"
-}
-```
-
-## Status Codes
-
-- `200 OK`: Request succeeded
-- `201 Created`: Resource successfully created
-- `204 No Content`: Request succeeded with no content returned
-- `400 Bad Request`: Invalid request parameters
-- `404 Not Found`: Resource not found
-- `500 Internal Server Error`: Server error occurred
-
-## Data Models
-
-### Form Data
-- `id`: UUID - Unique identifier
-- `question`: String - The form question
-- `answer`: String - Patient's response
-- `queries`: Array - Associated queries about this form entry
-
-### Query
-- `id`: UUID - Unique identifier
-- `title`: String - Title of the query
-- `description`: String - Detailed description
-- `status`: String - Either "OPEN" or "RESOLVED"
-- `createdAt`: DateTime - Creation timestamp
-- `updatedAt`: DateTime - Last update timestamp
-- `formDataId`: UUID - Reference to associated form data
