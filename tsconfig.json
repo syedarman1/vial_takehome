@@ -1,23 +1,21 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
     "target": "es2017",
+    "module": "commonjs",
+    "rootDir": "./src",
     "outDir": "./dist",
-    "baseUrl": "./src",
-    "typeRoots": ["./node_modules/@types"],
+    "strict": true,
+    "esModuleInterop": true,
+    "moduleResolution": "node",
+    "skipLibCheck": true,
+    "resolveJsonModule": true,
     "types": ["node"],
-    "moduleResolution": "Node",
-    "incremental": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": true,
     "declarationMap": true,
     "inlineSourceMap": true,
-    "inlineSources": true,
-    "strictNullChecks": true
+    "inlineSources": true
   },
-  "include": ["**/*"],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "**/*.spec.ts"]
 }
