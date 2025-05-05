@@ -27,8 +27,10 @@
     "typescript": "^5.8.3"
   },
   "scripts": {
+    "build": "tsc",
     "start": "ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
+    "heroku-postbuild": "npm run build",
     "migrate": "docker exec -it vial-backend-api npx prisma migrate deploy",
     "seed": "docker exec -it vial-backend-api npx prisma db seed",
     "lint": "eslint src --ext .ts",
