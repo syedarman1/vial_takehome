@@ -27,6 +27,7 @@
     "typescript": "^5.7.2"
   },
   "scripts": {
+    "start": "ts-node src/index.ts",
     "dev": "nodemon src/index.ts",
     "migrate": "docker exec -it vial-backend-api npx prisma migrate deploy",
     "seed": "docker exec -it vial-backend-api npx prisma db seed",
