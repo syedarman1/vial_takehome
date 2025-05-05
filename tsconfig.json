@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "es2017",
     "module": "commonjs",
-    "rootDir": ".",                  
+    "rootDir": ".",
     "outDir": "./build",
     "strict": true,
     "esModuleInterop": true,
@@ -16,11 +16,6 @@
     "inlineSourceMap": true,
     "inlineSources": true
   },
-  "include": [
-    "**/*.ts",  
-  ],
-  "exclude": [
-    "node_modules",
-    "**/*.spec.ts"
-  ]
+  "include": ["**/*.ts"],
+  "exclude": ["node_modules", "**/*.spec.ts"]
 }

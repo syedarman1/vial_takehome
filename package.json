@@ -5,11 +5,11 @@
   "main": "index.js",
   "scripts": {
     "build": "tsc",
-    "start": "node dist/index.js",
+    "start": "node build/index.js",
     "dev": "nodemon src/index.ts",
     "heroku-postbuild": "npm run build",
     "migrate": "docker exec -it vial-backend-api npx prisma migrate deploy",
-    "seed": "docker exec -it vial-backend-api npx prisma db seed",
+    "seed": "node build/prisma/seed.js",
     "lint": "eslint src --ext .ts",
     "lint:fix": "eslint src --ext .ts --fix"
   },
