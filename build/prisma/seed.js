@@ -1,0 +1,32 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const client_1 = require("@prisma/client");
+const data_1 = require("./data");
+const client = new client_1.PrismaClient();
+const deleteAllRecords = async () => {
+    // Deletion order is important due to non-null relation constraints.
+    await client.formData.deleteMany();
+    console.log('All records deleted');
+};
+const createAllRecords = async () => {
+    // Deletion order is important due to non-null relation constraints.
+    const data = await (0, data_1.getSeedData)();
+    await client.formData.createMany({ data: data.formData });
+    console.log('All records created');
+};
+async function seed() {
+    await deleteAllRecords();
+    await createAllRecords();
+}
+seed()
+    .then(async () => {
+    await client.$disconnect();
+    console.log('database disconnected');
+    process.exit(0);
+})
+    .catch(async (e) => {
+    console.error(e);
+    await client.$disconnect();
+    process.exit(1);
+});
+//# sourceMappingURL=data:application/json;base64,eyJ2ZXJzaW9uIjozLCJmaWxlIjoic2VlZC5qcyIsInNvdXJjZVJvb3QiOiIiLCJzb3VyY2VzIjpbIi4uLy4uL3ByaXNtYS9zZWVkLnRzIl0sIm5hbWVzIjpbXSwibWFwcGluZ3MiOiI7O0FBQUEsMkNBQTZDO0FBRTdDLGlDQUFvQztBQUVwQyxNQUFNLE1BQU0sR0FBRyxJQUFJLHFCQUFZLEVBQUUsQ0FBQTtBQUVqQyxNQUFNLGdCQUFnQixHQUFHLEtBQUssSUFBSSxFQUFFO0lBQ2xDLG9FQUFvRTtJQUVwRSxNQUFNLE1BQU0sQ0FBQyxRQUFRLENBQUMsVUFBVSxFQUFFLENBQUE7SUFFbEMsT0FBTyxDQUFDLEdBQUcsQ0FBQyxxQkFBcUIsQ0FBQyxDQUFBO0FBQ3BDLENBQUMsQ0FBQTtBQUVELE1BQU0sZ0JBQWdCLEdBQUcsS0FBSyxJQUFJLEVBQUU7SUFDbEMsb0VBQW9FO0lBQ3BFLE1BQU0sSUFBSSxHQUFHLE1BQU0sSUFBQSxrQkFBVyxHQUFFLENBQUE7SUFDaEMsTUFBTSxNQUFNLENBQUMsUUFBUSxDQUFDLFVBQVUsQ0FBQyxFQUFFLElBQUksRUFBRSxJQUFJLENBQUMsUUFBUSxFQUFFLENBQUMsQ0FBQTtJQUV6RCxPQUFPLENBQUMsR0FBRyxDQUFDLHFCQUFxQixDQUFDLENBQUE7QUFDcEMsQ0FBQyxDQUFBO0FBRUQsS0FBSyxVQUFVLElBQUk7SUFDakIsTUFBTSxnQkFBZ0IsRUFBRSxDQUFBO0lBQ3hCLE1BQU0sZ0JBQWdCLEVBQUUsQ0FBQTtBQUMxQixDQUFDO0FBRUQsSUFBSSxFQUFFO0tBQ0gsSUFBSSxDQUFDLEtBQUssSUFBSSxFQUFFO0lBQ2YsTUFBTSxNQUFNLENBQUMsV0FBVyxFQUFFLENBQUE7SUFDMUIsT0FBTyxDQUFDLEdBQUcsQ0FBQyx1QkFBdUIsQ0FBQyxDQUFBO0lBQ3BDLE9BQU8sQ0FBQyxJQUFJLENBQUMsQ0FBQyxDQUFDLENBQUE7QUFDakIsQ0FBQyxDQUFDO0tBQ0QsS0FBSyxDQUFDLEtBQUssRUFBQyxDQUFDLEVBQUMsRUFBRTtJQUNmLE9BQU8sQ0FBQyxLQUFLLENBQUMsQ0FBQyxDQUFDLENBQUE7SUFDaEIsTUFBTSxNQUFNLENBQUMsV0FBVyxFQUFFLENBQUE7SUFDMUIsT0FBTyxDQUFDLElBQUksQ0FBQyxDQUFDLENBQUMsQ0FBQTtBQUNqQixDQUFDLENBQUMsQ0FBQSIsInNvdXJjZXNDb250ZW50IjpbImltcG9ydCB7IFByaXNtYUNsaWVudCB9IGZyb20gJ0BwcmlzbWEvY2xpZW50J1xuXG5pbXBvcnQgeyBnZXRTZWVkRGF0YSB9IGZyb20gJy4vZGF0YSdcblxuY29uc3QgY2xpZW50ID0gbmV3IFByaXNtYUNsaWVudCgpXG5cbmNvbnN0IGRlbGV0ZUFsbFJlY29yZHMgPSBhc3luYyAoKSA9PiB7XG4gIC8vIERlbGV0aW9uIG9yZGVyIGlzIGltcG9ydGFudCBkdWUgdG8gbm9uLW51bGwgcmVsYXRpb24gY29uc3RyYWludHMuXG5cbiAgYXdhaXQgY2xpZW50LmZvcm1EYXRhLmRlbGV0ZU1hbnkoKVxuXG4gIGNvbnNvbGUubG9nKCdBbGwgcmVjb3JkcyBkZWxldGVkJylcbn1cblxuY29uc3QgY3JlYXRlQWxsUmVjb3JkcyA9IGFzeW5jICgpID0+IHtcbiAgLy8gRGVsZXRpb24gb3JkZXIgaXMgaW1wb3J0YW50IGR1ZSB0byBub24tbnVsbCByZWxhdGlvbiBjb25zdHJhaW50cy5cbiAgY29uc3QgZGF0YSA9IGF3YWl0IGdldFNlZWREYXRhKClcbiAgYXdhaXQgY2xpZW50LmZvcm1EYXRhLmNyZWF0ZU1hbnkoeyBkYXRhOiBkYXRhLmZvcm1EYXRhIH0pXG5cbiAgY29uc29sZS5sb2coJ0FsbCByZWNvcmRzIGNyZWF0ZWQnKVxufVxuXG5hc3luYyBmdW5jdGlvbiBzZWVkKCkge1xuICBhd2FpdCBkZWxldGVBbGxSZWNvcmRzKClcbiAgYXdhaXQgY3JlYXRlQWxsUmVjb3JkcygpXG59XG5cbnNlZWQoKVxuICAudGhlbihhc3luYyAoKSA9PiB7XG4gICAgYXdhaXQgY2xpZW50LiRkaXNjb25uZWN0KClcbiAgICBjb25zb2xlLmxvZygnZGF0YWJhc2UgZGlzY29ubmVjdGVkJylcbiAgICBwcm9jZXNzLmV4aXQoMClcbiAgfSlcbiAgLmNhdGNoKGFzeW5jIGUgPT4ge1xuICAgIGNvbnNvbGUuZXJyb3IoZSlcbiAgICBhd2FpdCBjbGllbnQuJGRpc2Nvbm5lY3QoKVxuICAgIHByb2Nlc3MuZXhpdCgxKVxuICB9KVxuIl19

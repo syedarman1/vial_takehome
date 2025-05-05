@@ -1,0 +1,1 @@
+{"version":3,"file":"formData.interface.d.ts","sourceRoot":"","sources":["../../../../src/routes/schemas/formData.interface.ts"],"names":[],"mappings":"AAAA,MAAM,WAAW,SAAS;IACxB,EAAE,EAAE,MAAM,CAAA;IACV,QAAQ,EAAE,MAAM,CAAA;IAChB,MAAM,EAAE,MAAM,CAAA;CACf;AAED,MAAM,WAAW,gBAAgB;IAC/B,KAAK,EAAE,MAAM,CAAA;IACb,QAAQ,EAAE,SAAS,EAAE,CAAA;CACtB"}
