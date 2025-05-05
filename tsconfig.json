@@ -3,7 +3,7 @@
     "target": "es2017",
     "module": "commonjs",
     "rootDir": ".",                  
-    "outDir": "./dist",
+    "outDir": "./build",
     "strict": true,
     "esModuleInterop": true,
     "moduleResolution": "node",
@@ -17,8 +17,7 @@
     "inlineSources": true
   },
   "include": [
-    "src/**/*",   
-    "prisma/**/*" 
+    "**/*.ts",  
   ],
   "exclude": [
     "node_modules",
