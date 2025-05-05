@@ -68,7 +68,6 @@ docker-compose exec nodeserver npx prisma db seed
 
 You should see your form_data table populated.
 ```
-
 ## Frontend Setup
 
 ```bash
