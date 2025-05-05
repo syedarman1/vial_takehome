@@ -1,57 +1,50 @@
+/* globals.css */
 
+/* Tailwind’s base reset and utility classes */
 @import 'tailwindcss/preflight';
 @import 'tailwindcss/utilities';
 
+/* Root vars for theming—keeps colors consistent across components */
 :root {
-  
-  --background: #000000;
-  --foreground: #e5e5e5;
-  --primary: #4b8aff;
-  --secondary: #999999;
-  --success: #4ade80;
-  --danger: #ff4d4d;
-  --muted: #666666;
-  --card-bg: #111111;
-  --sidebar-bg: #1a1a1a;
-  --muted-border: #333333;
-  --hover-bg: #222222;
+  --background: #000;        /* overall page background */
+  --foreground: #e5e5e5;     /* main text color */
+  --primary: #4b8aff;        /* buttons, links, accents */
+  --secondary: #999;         /* labels, subtitles */
+  --success: #4ade80;        /* success indicators */
+  --danger: #ff4d4d;         /* error/warning indicators */
+  --muted: #666;             /* disabled or low-priority text */
+  --card-bg: #111;           /* panels, cards */
+  --muted-border: #333;      /* subtle borders */
+  --hover-bg: #222;          /* row hover states */
 }
 
+/* Global body styling */
 body {
+  margin: 0;
+  padding: 0;
   background: var(--background);
   color: var(--foreground);
-  line-height: 1.5;
-  margin: 0;
   font-family: var(--font-geist-sans), sans-serif;
+  line-height: 1.5;
 }
 
-
+/* Small “slide up” animation for modals, toasts, etc. */
 @keyframes slideUp {
-  from {
-    transform: translateY(100%) scale(0.9);
-    opacity: 0;
-  }
-  to {
-    transform: translateY(0) scale(1);
-    opacity: 1;
-  }
+  from { transform: translateY(100%) scale(0.9); opacity: 0; }
+  to   { transform: translateY(0) scale(1);      opacity: 1; }
 }
-
 .animate-slideUp {
   animation: slideUp 0.3s ease-out forwards;
 }
 
-
+/* Simple shadow and lift effects for interactive elements */
 .card-shadow {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 4px 12px rgba(0,0,0,0.6);
 }
-
-
 .hover-lift {
   transition: transform 0.2s ease, box-shadow 0.2s ease;
 }
-
 .hover-lift:hover {
   transform: translateY(-2px);
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.7);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.7);
 }

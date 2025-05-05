@@ -1,6 +1,13 @@
+// page.tsx
 'use client';
 
-import { AppShell, Title, useMantineTheme, rem, useMantineColorScheme } from '@mantine/core';
+import {
+  AppShell,
+  Title,
+  useMantineTheme,
+  rem,
+  useMantineColorScheme,
+} from '@mantine/core';
 import { useEffect } from 'react';
 import TableView from '../components/TableView';
 
@@ -8,41 +15,41 @@ export default function Home() {
   const theme = useMantineTheme();
   const { setColorScheme } = useMantineColorScheme();
 
+  // enforce dark mode whenever this page loads
   useEffect(() => {
     setColorScheme('dark');
   }, [setColorScheme]);
 
+  // define header height in REM
   const headerHeight = rem(60);
-
-  const appShellStyles = {
-    main: {
-      backgroundColor: 'var(--background)',
-    },
-  };
 
   return (
     <AppShell
-      header={{ height: headerHeight }}
       padding="md"
-      styles={appShellStyles}
+      header={{ height: headerHeight }}
+      styles={{
+        main: { backgroundColor: 'var(--background)' }, // main content bg
+      }}
     >
+      {/* Top bar with title */}
       <AppShell.Header
+        px="md"
         style={{
-          backgroundColor: 'var(--card-bg)',
+          backgroundColor: 'var(--card-bg)',              // panel background
           borderBottom: `${rem(1)} solid var(--muted-border)`,
           display: 'flex',
           alignItems: 'center',
-          transition: 'background-color 0.3s ease, border-color 0.3s ease',
-          boxShadow: '0 4px 12px rgba(0, 0, 0, 0.6)',
+          boxShadow: '0 4px 12px rgba(0,0,0,0.6)',
+          transition: 'background-color 0.3s, border-color 0.3s',
         }}
-        px="md"
-        className="hover-lift"
+        className="hover-lift"                            // subtle lift effect
       >
         <Title order={3} c="var(--primary)">
           Query Management System
         </Title>
       </AppShell.Header>
 
+      {/* Main section: our table of form entries + queries */}
       <AppShell.Main>
         <TableView />
       </AppShell.Main>

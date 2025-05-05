@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+// Importing dependencies for our modal component
+import { useState, useEffect } from 'react'; // React hooks for state and lifecycle management
 import {
   Modal,
   Textarea,
@@ -12,43 +13,52 @@ import {
   rem,
   useMantineTheme,
   useMantineColorScheme,
-} from '@mantine/core';
-import { notifications } from '@mantine/notifications';
-import { IconCheck, IconAlertTriangle, IconPlus, IconX, IconTrash } from '@tabler/icons-react';
-import { FormData, Query } from '../types';
+} from '@mantine/core'; // Mantine UI components for modal and form elements
+import { notifications } from '@mantine/notifications'; // Notification system for user feedback
+import { IconCheck, IconAlertTriangle, IconPlus, IconX, IconTrash } from '@tabler/icons-react'; // Icons for buttons and status
+import { FormData, Query } from '../types'; // Type definitions for our data structures
 
+// Defining props for the modal component
 interface Props {
-  opened: boolean;
-  formData: FormData | null;
-  query: Query | null;
-  onClose: () => void;
-  onSubmit: () => Promise<void>;
+  opened: boolean;               // Controls whether modal is visible
+  formData: FormData | null;     // Passed when creating a new query
+  query: Query | null;           // Passed when editing/viewing an existing query
+  onClose: () => void;           // Callback to close the modal
+  onSubmit: () => Promise<void>; // Callback to refresh parent data after changes
 }
 
+// Main modal component for creating/editing queries
 export default function CreateQueryModal({ opened, formData, query, onClose, onSubmit }: Props) {
+  // Accessing Mantine theme and color scheme for styling
   const theme = useMantineTheme();
   const { colorScheme } = useMantineColorScheme();
-  const [description, setDescription] = useState('');
-  const [isResolving, setIsResolving] = useState(false);
-  const [isSaving, setIsSaving] = useState(false);
-  const [isDeleting, setIsDeleting] = useState(false);
 
-  const isEdit = Boolean(query);
-  const isResolved = query?.status === 'RESOLVED';
+  // State management for form and loading states
+  const [description, setDescription] = useState('');       // Holds textarea content
+  const [isResolving, setIsResolving] = useState(false);    // Loading flag for resolving queries
+  const [isSaving, setIsSaving] = useState(false);          // Loading flag for saving/creating
+  const [isDeleting, setIsDeleting] = useState(false);      // Loading flag for deleting
 
+  // Flags to determine modal mode
+  const isEdit = Boolean(query);                  // True when editing an existing query
+  const isResolved = query?.status === 'RESOLVED';// True if query is already resolved
+
+  // Preload description when editing a query
   useEffect(() => {
     if (query) setDescription(query.description || '');
     else setDescription('');
   }, [query]);
 
+  // Guard against invalid state
   if (!formData && !query) return null;
 
+  // Handle saving (create or update) queries
   const handleSave = async () => {
     setIsSaving(true);
     try {
       if (isEdit) {
+        // Update existing query description
         const url = `http://127.0.0.1:8080/queries/${query!.id}`;
-        
         const payload = { description };
         console.log('PATCH request URL:', url, 'Payload:', payload);
         const response = await fetch(url, {
@@ -60,6 +70,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
         console.log('PATCH response:', response.status, data);
         if (!response.ok) throw new Error(`Failed to update query: ${response.statusText}`);
       } else {
+        // Create new query linked to formData
         const url = `http://127.0.0.1:8080/queries`;
         const payload = {
           title: formData!.question,
@@ -77,6 +88,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
         if (!response.ok) throw new Error(`Failed to create query: ${response.statusText}`);
       }
 
+      // Refresh parent table and show success notification
       await onSubmit();
       notifications.show({
         title: isEdit ? 'Query Updated' : 'Query Created',
@@ -88,12 +100,13 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
         autoClose: 3000,
       });
 
-      
+      // Close modal only when creating, keep open for editing
       if (!isEdit) {
         onClose();
       }
     } catch (err) {
       console.error(err);
+      // Show error notification if save fails
       notifications.show({
         title: 'Error',
         message: err instanceof Error ? err.message : 'An error occurred while saving.',
@@ -106,6 +119,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
     }
   };
 
+  // Handle marking a query as resolved
   const handleResolve = async () => {
     setIsResolving(true);
     try {
@@ -143,6 +157,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
     }
   };
 
+  // Handle deleting a query
   const handleDelete = async () => {
     if (!query?.id) {
       notifications.show({
@@ -187,6 +202,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
     }
   };
 
+  // Render the modal with form and action buttons
   return (
     <Modal
       opened={opened}
@@ -206,6 +222,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
     >
       <Stack gap="lg">
         {isEdit && (
+          // Display query details when editing
           <Flex direction="column" gap="sm" p="md" style={{
             backgroundColor: 'var(--card-bg)',
             borderRadius: theme.radius.md,
@@ -246,6 +263,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
         )}
 
         {!isEdit && formData?.question && (
+          // Show related question when creating a new query
           <Text c="var(--foreground)" fz="lg" fw={500} mb="sm">
             Related Question: "{formData.question}"
           </Text>
@@ -276,6 +294,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
 
         <Group justify="flex-end" gap={rem(12)} mt="sm" wrap="nowrap" style={{ width: '100%' }}>
           {isEdit && (
+            // Delete button for existing queries
             <Button
               onClick={handleDelete}
               color="red"
@@ -301,6 +320,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
           </Button>
 
           {isEdit && !isResolved && (
+            // Resolve button for open queries
             <Button
               onClick={handleResolve}
               color="teal"
@@ -316,6 +336,7 @@ export default function CreateQueryModal({ opened, formData, query, onClose, onS
           )}
 
           {!isResolved && (
+            // Save button for creating/updating queries
             <Button
               onClick={handleSave}
               loading={isSaving}
